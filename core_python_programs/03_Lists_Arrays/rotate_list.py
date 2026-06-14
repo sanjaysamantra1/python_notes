@@ -1,0 +1,1 @@
+a=list(map(int,input().split())); k=int(input()); k%=len(a); print(a[k:]+a[:k])

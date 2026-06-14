@@ -1,0 +1,1 @@
+a=list(map(int,input().split())); print({x:a.count(x) for x in set(a)})
