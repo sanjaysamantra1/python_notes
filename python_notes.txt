@@ -1,0 +1,62 @@
+
+Python Introduction
+===================
+-Python is a high-level, interpreted, object-oriented, and general-purpose programming language.
+-Python is one of the most popular programming languages because of its simplicity, readability, and wide range of applications
+
+
+Applications of Python
+======================
+-Web Development
+-Data Science
+-Artificial Intelligence
+-Machine Learning
+-Automation
+-Desktop Applications
+-Game Development
+
+
+Python Features:
+===============
+Python provides several features that make it one of the most widely used programming languages.
+1. Easy to Learn and Use : Python syntax is simple and resembles the English language.
+2. Python is an interpreted language.
+3. Platform Independent
+4. Open Source
+5. Object-Oriented Programming Support
+6. Dynamically Typed Language : No need to specify data types explicitly.
+
+
+installation
+============
+1. Download Python and install
+    https://www.python.org/downloads/
+    https://www.python.org/downloads/macos/
+2. check python and pip installed?
+   python --version
+   pip --version
+   
+   
+Python : Programming Language
+pip    : Package Manager
+
+
+
+pip
+===
+-It is the package manager for Python that allows us to install, upgrade, remove, and manage third-party Python libraries and packages.
+-Python comes with many built-in modules, but developers often need additional libraries.
+-Install a Package 
+ pip install requests
+ pip install numpy pandas matplotlib
+-Uninstall a Package
+ pip uninstall package_name
+-View Installed Packages
+ pip list
+
+	
+Data Types
+==========
+-A data type defines the type of value stored in a variable.
+
+
