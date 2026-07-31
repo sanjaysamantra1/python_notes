@@ -1,0 +1,32 @@
+FASTAPI SYLLABUS
+
+1. API Fundamentals
+2. HTTP Methods and Status Codes
+3. JSON
+4. FastAPI Introduction
+5. Environment Setup
+6. Routing
+7. Path Parameters
+8. Query Parameters
+9. Request Body
+10. Response Models
+11. Pydantic Models
+12. Dependency Injection
+13. Headers, Cookies, Forms
+14. File Uploads
+15. Database Integration
+16. SQLAlchemy ORM
+17. CRUD Operations
+18. Authentication
+19. JWT
+20. Authorization
+21. Middleware
+22. Exception Handling
+23. Async Programming
+24. Background Tasks
+25. API Documentation
+26. Testing
+27. Logging
+28. Docker
+29. Deployment
+30. Final Project

@@ -1,3 +1,814 @@
+FastAPI Syllabus
+=================
+-Introduction to APIs and REST Architecture
+-HTTP Protocol, Request-Response Cycle
+-HTTP Methods (GET, POST, PUT, PATCH, DELETE)
+-Status Codes 
+-JSON
+
+-FastAPI Overview and Features
+-Environment Setup (Python, Virtual Environment, FastAPI, Uvicorn)
+-Project Structure and Best Practices
+-Creating First FastAPI Application
+
+-Routing
+-Path Parameters
+-Query Parameters
+-Request Body
+-Response Models
+-Data Validation
+-Type Hints
+
+-Pydantic Models
+-Field Validation
+-Optional Fields
+-Nested Models
+-Custom Validators
+-Request and Response Schemas
+
+-Dependency Injection
+-Reusable Dependencies
+-Database Dependencies
+-Custom Dependencies
+
+-Request Handling
+-Headers
+-Cookies
+-Form Data
+-File Uploads
+-File Downloads
+
+-Response Handling
+-JSONResponse
+-HTMLResponse
+-StreamingResponse
+-Custom Responses
+
+-Database Integration
+-SQL Fundamentals
+-SQLAlchemy ORM
+-Database Sessions
+-CRUD Operations
+-Relationships
+-Transactions
+-Database Migrations
+
+-Authentication
+-Password Hashing
+-JWT Authentication
+-Token Generation and Validation
+-OAuth2 Security
+
+-Authorization
+-Role Based Access Control (RBAC)
+-Protected Endpoints
+-Custom Permission Handling
+
+-Middleware
+-CORS Middleware
+-Logging Middleware
+-Custom Middleware
+
+-Exception Handling
+-HTTP Exceptions
+-Custom Exceptions
+-Global Exception Handling
+
+-Background Tasks
+-Asynchronous Programming
+-Async/Await
+-Concurrency in FastAPI
+
+-API Documentation
+-Swagger UI
+-ReDoc
+-OpenAPI Specification
+
+-Configuration Management
+-Environment Variables
+-Settings Management
+
+-Testing
+-Pytest
+-TestClient
+-Unit Testing
+-API Testing
+-Mocking Dependencies
+
+-Logging
+-Application Logging
+-Error Logging
+
+-Docker
+-Docker Fundamentals
+-Dockerizing FastAPI Applications
+-Docker Compose Basics
+
+-Deployment
+-Production Configuration
+-Uvicorn Workers
+-Nginx Reverse Proxy
+-Deployment Overview
+
+-Project Development
+-Authentication Module
+-User Management Module
+-Employee Management Module
+-Product Management Module
+-Search and Pagination
+-API Documentation
+-Security Best Practices
+-Project Deployment
+
+
+
+
+INTRODUCTION TO APIs
+======================
+-API (Application Programming Interface) allows communication between applications.
+-Client sends a request and server sends a response.
+
+
+REST ARCHITECTURE
+-----------------
+-REST = Representational State Transfer
+-Stateless communication: The server does not remember any information about previous requests.
+-Resource-based URLs: Resources are identified using URLs
+-Each request contains all required information: Since REST is stateless, every request must contain all data needed for processing
+
+Examples:
+GET    /users
+GET    /users/1
+POST   /users
+PUT    /users/1
+DELETE /users/1
+
+
+
+HTTP METHODS
+------------
+GET    : Retrieve data
+POST   : Create data
+PUT    : Update entire resource
+PATCH  : Update partial resource
+DELETE : Delete resource
+
+HTTP STATUS CODES
+-----------------
+200 : Success
+201 : Created
+400 : Bad Request
+401 : Unauthorized
+403 : Forbidden
+404 : Not Found
+500 : Internal Server Error
+
+
+JSON
+----
+-JavaScript Object Notation
+-Lightweight data exchange format.
+-Uses key-value pairs.
+
+Example:
+{
+  "id": 1,
+  "name": "John"
+}
+
+
+
+
+
+
+FastAPI Overview
+================
+-High Performance
+-Easy to Learn
+-Type Hint Support
+-Automatic Validation
+-Automatic API Documentation
+-Async Support
+-OpenAPI Standard
+
+
+
+
+Installation
+============
+pip install "fastapi[standard]"
+pip install uvicorn
+
+
+Create and activate a virtual environment
+-----------------------------------------
+-use a virtual environment to isolate the packages you install for each project.
+  python -m venv .venv
+  this command creates a new virtual environment in a directory called .venv
+  
+  
+  source .venv/Scripts/activate
+   .\env\Scripts\activate
+-Do this every time you start a new terminal session to work on the project.
+Get-Command python
+
+-If we have a requirements.txt, you can now use it to install its packages.
+  pip install -r requirements.txt
+
+
+
+PIP
+===
+-Python's package manager used to install, update, and remove external libraries.
+
+
+Install Package: pip install fastapi
+Install Specific Version: pip install fastapi==0.115.0
+Upgrade Package: pip install --upgrade fastapi
+Uninstall Package: pip uninstall fastapi
+View Installed Packages: pip list
+Show Package Information: pip show fastapi
+
+
+UVICORN
+=======
+-Uvicorn is a web server used to run FastAPI applications.
+-Uvicorn acts as the driver that starts and runs the FastAPI application.
+-FastAPI only defines API routes and business logic.
+-It does not listen for HTTP requests by itself.
+    A web server is required to:
+    - Start the application
+    - Listen on a port
+    - Accept requests
+    - Send responses
+-Uvicorn performs all these above tasks.
+
+
+FIRST FASTAPI APPLICATION
+=========================
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"message":"Hello FastAPI"}
+	
+	
+
+PROJECT STRUCTURE
+=================
+project/
+|
+├── main.py
+├── routers/
+├── models/
+├── schemas/
+├── database/
+├── services/
+├── utils/
+└── tests/
+
+
+
+Run Application
+===============
+-fastapi dev main.py --reload(without uvicorn)
+
+uvicorn main:app --reload
+    OR
+python -m uvicorn main:app --reload (main-fileName)
+
+application runs at: http://127.0.0.1:8000
+Swagger Documentation: http://127.0.0.1:8000/docs
+
+
+if app doesnt start
+====================
+python -m pip install --force-reinstall uvicorn
+uvicorn --version
+python -m pip show uvicorn
+python -c "import sys; print(sys.executable)"
+python -m site
+
+
+
+ROUTING
+========
+GET Route:
+@app.get("/users")
+
+POST Route:
+@app.post("/users")
+
+PUT Route:
+@app.put("/users/{id}")
+
+DELETE Route:
+@app.delete("/users/{id}")
+
+PATH PARAMETERS
+===============
+Used to pass values through URL.
+
+Example:
+@app.get("/users/{id}")
+def get_user(id:int):
+    return {"id":id}
+
+URL:
+http://localhost:8000/users/101
+
+QUERY PARAMETERS
+================
+Used for filtering and pagination.
+
+Example:
+@app.get("/users")
+def get_users(page:int=1,size:int=10):
+    return {"page":page,"size":size}
+
+URL:
+http://localhost:8000/users?page=1&size=10
+
+REQUEST BODY
+============
+Used to send data to server.
+
+Example:
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name:str
+    age:int
+
+@app.post("/users")
+def create_user(user:User):
+    return user
+
+RESPONSE MODEL
+==============
+Used to validate and format response.
+
+Example:
+@app.get("/users/{id}",response_model=User)
+
+Benefits:
+-Validation
+-Filtering
+-Auto Documentation
+
+TYPE HINTS
+==========
+Example:
+def add(a:int,b:int)->int:
+    return a+b
+
+Benefits:
+-Validation
+-Better IDE Support
+-Cleaner Code
+
+PYDANTIC MODELS
+===============
+Used for:
+-Validation
+-Serialization
+-Data Parsing
+
+Example:
+class Employee(BaseModel):
+    name:str
+    salary:float
+
+FIELD VALIDATION
+================
+from pydantic import Field
+
+class User(BaseModel):
+    age:int = Field(gt=18)
+
+Validation Rules:
+gt : greater than
+ge : greater than equal
+lt : less than
+le : less than equal
+
+OPTIONAL FIELDS
+===============
+from typing import Optional
+
+class User(BaseModel):
+    phone: Optional[str] = None
+
+NESTED MODELS
+=============
+class Address(BaseModel):
+    city:str
+
+class User(BaseModel):
+    name:str
+    address:Address
+
+DEPENDENCY INJECTION
+====================
+Used for reusable logic.
+
+Example:
+from fastapi import Depends
+
+def common():
+    return "dependency"
+
+@app.get("/")
+def home(data=Depends(common)):
+    return data
+
+Benefits:
+-Reusable Code
+-Clean Architecture
+-Loose Coupling
+
+HEADERS
+=======
+from fastapi import Header
+
+@app.get("/")
+def home(token:str=Header()):
+    return token
+
+COOKIES
+=======
+from fastapi import Cookie
+
+@app.get("/")
+def home(session:str=Cookie()):
+    return session
+
+FORM DATA
+=========
+from fastapi import Form
+
+@app.post("/login")
+def login(
+    username:str=Form(),
+    password:str=Form()
+):
+    pass
+
+FILE UPLOAD
+===========
+from fastapi import UploadFile
+
+@app.post("/upload")
+def upload(file:UploadFile):
+    return file.filename
+
+RESPONSE TYPES
+==============
+JSONResponse
+HTMLResponse
+StreamingResponse
+FileResponse
+
+Example:
+from fastapi.responses import JSONResponse
+
+return JSONResponse(
+    status_code=200,
+    content={"message":"success"}
+)
+
+DATABASE INTEGRATION
+====================
+-Store application data.
+-FastAPI commonly uses SQLAlchemy ORM.
+
+ORM
+===
+ORM = Object Relational Mapping
+
+Table ↔ Class
+
+Advantages:
+-No Raw SQL
+-Easier Maintenance
+-Database Independent
+
+SQLALCHEMY MODEL
+================
+class Employee(Base):
+    __tablename__ = "employees"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+CRUD OPERATIONS
+===============
+CREATE
+db.add(emp)
+db.commit()
+
+READ
+db.query(Employee).all()
+
+UPDATE
+emp.name = "John"
+db.commit()
+
+DELETE
+db.delete(emp)
+db.commit()
+
+DATABASE RELATIONSHIPS
+======================
+One-to-One
+One-to-Many
+Many-to-One
+Many-to-Many
+
+TRANSACTIONS
+============
+Used to ensure data consistency.
+
+Common Commands:
+commit()
+rollback()
+flush()
+
+AUTHENTICATION
+==============
+Authentication = Who are you?
+
+Examples:
+-Username & Password
+-OTP
+-JWT
+
+PASSWORD HASHING
+================
+Never store plain text passwords.
+
+Example:
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(
+    schemes=["bcrypt"]
+)
+
+hashed_password = pwd_context.hash("admin123")
+
+JWT AUTHENTICATION
+==================
+JWT = JSON Web Token
+
+Structure:
+Header.Payload.Signature
+
+Flow:
+User Login
+    ↓
+Generate Token
+    ↓
+Send Token
+    ↓
+Validate Token
+    ↓
+Access Resource
+
+Advantages:
+-Stateless
+-Secure
+-Scalable
+
+AUTHORIZATION
+=============
+Authorization = What can you access?
+
+ROLE BASED ACCESS CONTROL (RBAC)
+================================
+Roles:
+-Admin
+-Manager
+-Employee
+
+Example:
+if user.role != "admin":
+    raise HTTPException(403)
+
+MIDDLEWARE
+==========
+Middleware executes before and after requests.
+
+Uses:
+-Logging
+-Authentication
+-Monitoring
+
+Example:
+@app.middleware("http")
+async def logger(request, call_next):
+    response = await call_next(request)
+    return response
+
+CORS
+====
+Cross-Origin Resource Sharing
+
+Required when frontend and backend run on different domains.
+
+Example:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"]
+)
+
+EXCEPTION HANDLING
+==================
+Used to handle application errors.
+
+Example:
+raise HTTPException(
+    status_code=404,
+    detail="User Not Found"
+)
+
+GLOBAL EXCEPTION HANDLING
+=========================
+-Centralized error handling.
+-Consistent error responses.
+
+ASYNC PROGRAMMING
+=================
+Example:
+@app.get("/")
+async def home():
+    return {"message":"async"}
+
+Keywords:
+-async
+-await
+
+Benefits:
+-Better Performance
+-Concurrent Requests
+-Efficient I/O Operations
+
+BACKGROUND TASKS
+================
+Used for long-running operations.
+
+Examples:
+-Email Sending
+-SMS Sending
+-Report Generation
+
+Example:
+from fastapi import BackgroundTasks
+
+def send_email():
+    pass
+
+@app.post("/")
+def create(bg:BackgroundTasks):
+    bg.add_task(send_email)
+
+API DOCUMENTATION
+=================
+Swagger UI:
+http://localhost:8000/docs
+
+ReDoc:
+http://localhost:8000/redoc
+
+Benefits:
+-Interactive API Testing
+-Auto Documentation
+-Request/Response Examples
+
+OPENAPI
+=======
+-Industry standard API specification.
+-Automatically generated by FastAPI.
+
+ENVIRONMENT VARIABLES
+=====================
+Store:
+-Database URLs
+-JWT Secrets
+-API Keys
+
+Example:
+DATABASE_URL=mysql://...
+JWT_SECRET=mysecret
+
+Load using:
+python-dotenv
+
+TESTING
+=======
+Why Testing?
+-Verify functionality
+-Prevent bugs
+-Improve reliability
+
+PYTEST
+======
+Example:
+def test_add():
+    assert 2 + 2 == 4
+
+Run:
+pytest
+
+TEST CLIENT
+===========
+from fastapi.testclient import TestClient
+
+client = TestClient(app)
+
+def test_home():
+    response = client.get("/")
+    assert response.status_code == 200
+
+LOGGING
+=======
+Purpose:
+-Debugging
+-Monitoring
+-Auditing
+
+Levels:
+DEBUG
+INFO
+WARNING
+ERROR
+CRITICAL
+
+Example:
+import logging
+
+logging.info("Application Started")
+
+DOCKER
+======
+Docker allows packaging application and dependencies together.
+
+Build Image:
+docker build -t fastapi-app .
+
+Run Container:
+docker run -p 8000:8000 fastapi-app
+
+DOCKER BENEFITS
+===============
+-Consistent Environment
+-Easy Deployment
+-Scalability
+
+DEPLOYMENT
+==========
+Typical Production Architecture:
+
+Frontend (React)
+       ↓
+Nginx
+       ↓
+FastAPI
+       ↓
+PostgreSQL
+
+PRODUCTION CHECKLIST
+====================
+-Environment Variables
+-JWT Authentication
+-Logging
+-Exception Handling
+-Docker
+-Database Backup
+-HTTPS
+-Monitoring
+
+MINI PROJECT
+============
+Employee Management System
+
+Modules:
+-User Registration
+-Login
+-JWT Authentication
+-Employee CRUD
+-Department CRUD
+-Role Management
+-Search
+-Pagination
+-API Documentation
+
+Database Tables:
+-users
+-roles
+-employees
+-departments
 
 
 Resources: 

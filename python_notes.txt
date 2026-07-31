@@ -55,8 +55,125 @@ pip
  pip list
 
 	
+Python Syntax
+=============
+-The indentation in Python is very important
+-Python uses indentation to indicate a block of code.
+-Python will throw an error if we skip the indentation.
+-The number of spaces is up to us as a programmer, the most common use is four, but it has to be at least one
+
+ex:
+if 5 > 2:
+  print("Five is greater than two!")
+
+
+
+
+Variables
+==========
+-Variables are containers for storing data values.
+-Python has no command for declaring a variable
+-A variable is created the moment we first assign a value to it.
+ x = 5
+ y = "John"
+ print(x)
+ print(y)
+
+
+
+Variable Scopes  
+===============
+-Python variables has 4 scopes : LEGB
+
+Global → variables defined outside all functions
+Local → inside the current function
+Enclosing → inner function accesses outer function variables
+Built-in → Python's built-in names (len, print, etc.)
+
+Note: we cann't modify the global variable inside a function
+      To modify a global variable inside a function, use 'global' keyword
+      
+Note: inner function cann't modify the outer function variable value
+      To modify variables in enclosing scope, use 'nonlocal' keyword
+
+
+
 Data Types
 ==========
 -A data type defines the type of value stored in a variable.
+
+• int – Integer numbers
+  Example: age = 25
+           type(age)
+
+• float – Decimal numbers
+  Example: price = 99.99
+
+• complex – Complex numbers
+  Example: num = 2 + 3j
+
+• bool – Boolean values (True or False)
+  Example: is_active = True
+
+• str – String/Text data
+  Example: name = "Python"
+
+• list – Ordered, mutable collection
+  Example: fruits = ["Apple", "Mango", "Orange"]
+
+• tuple – Ordered, immutable collection
+  Example: colors = ("Red", "Green", "Blue")
+
+• set – Unordered collection of unique values
+  Example: numbers = {1, 2, 3, 4}
+
+• frozenset – Immutable set
+  Example: fs = frozenset([1, 2, 3])
+
+• dict – Key-value pairs
+  Example: student = {"name": "Sanjay", "age": 25}
+
+• range – Sequence of numbers
+  Example: nums = range(1, 6)
+
+• bytes – Immutable binary data
+  Example: b = b"Hello"
+
+• bytearray – Mutable binary data
+  Example: ba = bytearray(5)
+
+• memoryview – Memory view object
+  Example: mv = memoryview(bytes(5))
+
+• NoneType – Represents no value
+  Example: x = None
+
+
+Categories of Python Data Types
+
+• Numeric Types
+  -int
+  -float
+• Text Type
+  -str
+• Boolean Type
+  -bool
+• Sequence Types
+  -list
+  -tuple
+  -range
+• Set Types
+  -set
+  -frozenset
+• Mapping Type
+  -dict
+• Binary Types
+  -bytes
+  -bytearray
+  -memoryview
+• Special Type
+  -NoneType (None)
+
+
 
 
