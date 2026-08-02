@@ -177,3 +177,9 @@ Categories of Python Data Types
 
 
 
+String
+======
+upper()
+lower()
+capitalize()
+title()
