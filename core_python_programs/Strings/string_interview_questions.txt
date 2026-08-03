@@ -1,0 +1,29 @@
+Q1.Why are strings immutable in Python?
+-Python creates a new string rather than modifying the existing one.
+
+Q2. What is the difference between == and is when comparing strings?
+  == compares the values/content of two strings.
+  is compares whether two variables reference the same object in memory.
+
+Q3. What is string interning in Python?
+-Python may reuse an existing string object instead of creating another object containing the same value
+
+
+Q4. What is the difference between encoding and decoding?
+    Encoding : str → bytes
+    Decoding : bytes → str
+
+Q5. What is the difference between find() and index()?
+    When the substring is not available
+    find() Returns -1 , index() Raises ValueError
+
+Q6. What is the difference between split() and join()?
+    split() converts a string into a list of strings.  ex: "Java,Python,React".split(",")
+    join() combines an iterable of strings into one string. ex: ",".join(languageArr)
+
+Q7. Why is ''.join() preferred over repeated + concatenation for combining many strings?
+   Use + for a small number of strings; prefer join() when combining many strings from an iterable
+
+
+
+
