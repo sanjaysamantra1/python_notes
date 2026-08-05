@@ -183,6 +183,72 @@ upper()
 lower()
 capitalize()
 title()
+swapcase()
+
+Search & count:
+find() — returns first occurrence index, or -1
+rfind() — searches from right
+index() — returns first occurrence index, raises error if not found
+rindex() — searches from right, raises error if not found
+count() — counts occurrences
+startswith() — checks prefix
+endswith() — checks suffix
+
+Validation / checking
+isalpha() — only alphabetic characters
+isdigit() — only digit characters
+isdecimal() — decimal characters
+isnumeric() — numeric characters
+isalnum() — letters or numbers
+islower() — checks lowercase
+isupper() — checks uppercase
+istitle() — checks title case
+isspace() — only whitespace
+isidentifier() — valid Python identifier
+isprintable() — all characters printable
+isascii() — all characters ASCII
+
+Trimming & removing
+strip() — removes characters/whitespace from both ends
+lstrip() — removes from left
+rstrip() — removes from right
+removeprefix() — removes exact prefix
+removesuffix() — removes exact suffix
 
 
 
+List
+=====
+-In Python array is usually a List.
+-A list can contain different data types: 
+    data = [10, "Python", True, 20.5]
+
+
+
+
+ Method       Purpose                      Example              
+ -----------  ---------------------------  -------------------- 
+ append()   Add one item at end          a.append(10)       
+ extend()   Add multiple items           a.extend([10, 20]) 
+ insert()   Add item at specific index   a.insert(1, 10)    
+ remove()   Remove first matching value  a.remove(10)       
+ pop()      Remove and return item       a.pop(1)           
+ clear()    Remove all items             a.clear()          
+ index()    Find index of a value        a.index(10)        
+ count()    Count occurrences            a.count(10)        
+ sort()     Sort list in place           a.sort()           
+ reverse()  Reverse list in place        a.reverse()        
+ copy()     Create shallow copy          b = a.copy()       
+
+
+len(arr)       # length
+min(arr)       # minimum
+max(arr)       # maximum
+sum(arr)       # sum
+sorted(arr)    # new sorted list
+
+
+List vs Tuple 
+=============
+List = Mutable → can be changed --> Good for changing data
+Tuple = Immutable → cannot be changed --> Good for fixed data

@@ -230,6 +230,39 @@ View Installed Packages: pip list
 Show Package Information: pip show fastapi
 
 
+
+UV
+===
+-it’s a very fast Python package and project manager.
+-It can replace what we normally use pip, venv, and pip-tools for.
+-install UV:
+    Windows: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    MAC : curl -LsSf https://astral.sh/uv/install.sh | sh
+
+-Check UV Installation
+    uv --version
+-Create a project
+    uv init project_1 --bare
+    cd project_1
+    uv add "fastapi[standard]"
+    uv run fastapi dev main.py
+
+--bare: create only the minimal pyproject.toml file, without generating a sample main.py, README.md, or other files
+
+Why "fastapi[standard]" instead of fastapi?
+===========================================
+installs FastAPI plus the standard optional dependencies used for development, including the FastAPI CLI and Uvicorn.
+
+
+Traditional Python             uv
+----------------------------------------------
+python -m venv .venv     →     uv venv
+pip install fastapi      →     uv add fastapi
+pip install -r ...       →     uv sync
+python main.py           →     uv run python main.py
+uvicorn main:app         →     uv run uvicorn main:app
+
+
 UVICORN
 =======
 -Uvicorn is a web server used to run FastAPI applications.
@@ -242,6 +275,15 @@ UVICORN
     - Accept requests
     - Send responses
 -Uvicorn performs all these above tasks.
+
+
+
+
+uv       = Python project/package manager
+uvicorn  = Python ASGI web server
+FastAPI  = Web/API framework
+
+
 
 
 FIRST FASTAPI APPLICATION

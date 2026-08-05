@@ -1,0 +1,116 @@
+1. What are the main features of Python?
+Python is easy to learn, dynamically typed, object-oriented, cross-platform, open-source, and has a large standard library.
+
+2. Is Python compiled or interpreted?
+Python is generally called interpreted. In CPython, source code is first compiled into bytecode and then executed by the Python Virtual Machine.
+
+3. What is dynamic typing?
+The type of a variable is determined at runtime, and the same variable can refer to objects of different types.
+
+4. What are the main built-in data types in Python?
+int, float, complex, bool, str, list, tuple, set, dict, range, bytes, and NoneType.
+
+5. What is the difference between List and Tuple?
+List is mutable and uses []. Tuple is immutable and uses ().
+
+6. What is mutable and immutable?
+Mutable objects can be changed after creation, such as list, dict, and set. Immutable objects cannot be changed, such as int, str, and tuple.
+
+7. What is a Set?
+A set is a collection of unique elements. It is commonly used to remove duplicates and perform set operations.
+
+8. What is a Dictionary?
+A dictionary stores data as key-value pairs. Keys must be hashable and unique.
+
+9. What is slicing?
+Slicing extracts part of a sequence using [start:stop:step]. Example: text[::-1] reverses a string.
+
+10. What is the difference between == and is?
+== compares values. is checks whether two references point to the same object.
+
+11. What is None?
+None represents the absence of a value. It is commonly checked using: value is None.
+
+12. What is the difference between break, continue, and pass?
+break stops a loop. continue skips the current iteration. pass does nothing and is used as a placeholder.
+
+13. What are *args and **kwargs?
+*args collects extra positional arguments into a tuple. **kwargs collects extra keyword arguments into a dictionary.
+
+14. What is a lambda function?
+A lambda is a small anonymous function written in a single expression. Example: lambda x: x * 2.
+
+15. What is List Comprehension?
+It is a concise way to create lists. Example: [x*x for x in range(5)].
+
+16. What are map(), filter(), and reduce()?
+map() transforms elements, filter() selects elements, and reduce() combines elements into a single result.
+
+17. What is recursion?
+Recursion is when a function calls itself. A recursive function should have a base condition to stop recursion.
+
+18. What is exception handling?
+Exception handling handles runtime errors using try, except, else, and finally.
+
+19. What is the difference between a syntax error and an exception?
+A syntax error occurs when code violates Python syntax. An exception occurs while valid code is executing.
+
+20. What is OOP?
+Object-Oriented Programming organizes programs using classes and objects. Major concepts are encapsulation, inheritance, polymorphism, and abstraction.
+
+21. What is a class and an object?
+A class is a blueprint for creating objects. An object is an instance of a class.
+
+22. What is self in Python?
+self refers to the current instance of a class and is used to access its attributes and methods.
+
+23. What is init()?
+init() is an initializer method automatically called after an object is created, commonly used to initialize instance attributes.
+
+24. What is inheritance?
+Inheritance allows a child class to reuse and extend the properties and methods of a parent class.
+
+25. What is method overriding?
+Method overriding occurs when a child class provides its own implementation of a method inherited from the parent class.
+
+26. What is an iterator?
+An iterator produces values one at a time using next(). An iterator can be obtained using iter().
+
+27. What is a generator?
+A generator produces values lazily, one at a time, usually using yield. It is memory-efficient for large sequences.
+
+28. What is a decorator?
+A decorator wraps a function or class to extend or modify its behavior without directly changing its source code.
+
+29. What is shallow copy vs deep copy?
+A shallow copy creates a new outer object but may share nested objects. A deep copy recursively copies nested objects too.
+
+30. What is the difference between append() and extend()?
+append() adds one object to a list. extend() adds each element from another iterable.
+
+31. What is the difference between remove(), pop(), and del?
+remove() deletes by value. pop() removes and returns an item, usually by index. del deletes an item, slice, or variable.
+
+32. What is the difference between sort() and sorted()?
+list.sort() modifies the original list. sorted() returns a new sorted list and works with many iterables.
+
+33. What is a module?
+A module is a Python file containing reusable variables, functions, and classes that can be imported.
+
+34. What is a package?
+A package organizes related Python modules into a directory structure.
+
+35. What is PEP 8?
+PEP 8 is Python’s style guide containing recommendations for writing readable and consistent Python code.
+
+36. What is the GIL?
+GIL stands for Global Interpreter Lock. In traditional CPython builds, it allows only one thread at a time to execute Python bytecode within a process.
+
+37. What is the difference between threading and multiprocessing?
+Threading uses multiple threads in one process and is useful for I/O-bound work. Multiprocessing uses separate processes and is useful for CPU-bound work.
+
+38. What is pip?
+pip is Python’s package installer. It is used to install external Python packages.
+
+39. What is a virtual environment?
+A virtual environment creates an isolated Python environment so each project can have its own dependencies and package versions.
