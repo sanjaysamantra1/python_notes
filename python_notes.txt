@@ -467,4 +467,66 @@ values()	Returns a list of all the values in the dictionary
 Modules
 =======
 -A file containing a set of functions we want to use in other files.
--
+
+
+
+
+Object-Oriented Programming
+===========================
+-A class defines what an object should look like. object is created based on that class.
+
+class - structure/blueprint/template for creating Object 
+		class has only logical existance
+		class doesn't have physical existance
+		
+object - Real Entity
+		 every instance of a class
+		 Object has physical existance
+
+
+-All classes have a built-in method called __init__(), which is always executed when the class is being initiated.     
+
+-class A: pass
+ pass means “do nothing.” define an empty class without raising a syntax error.
+
+-The __init__() method is used to assign values to object properties
+ "self"  refers to the current object(instance) of a class
+  Use self to access class properties
+  While we can use a different name, it is strongly recommended to use self as it is the convention 
+
+-Default Values in __init__() 
+ ex: def __init__(self, name, age=18):
+
+-Properties defined inside __init__() belong to each object (instance properties).
+ Properties defined outside methods belong to the class itself (class properties) and are shared by all objects:
+
+-we can make properties private by using a double underscore __ prefix
+ 
+
+-All methods must have self as the first parameter.
+ def greet(self):
+    print("Hello, my name is " + self.name)
+
+-method with parameters
+  def add(self, a, b):
+    return a + b    
+
+-The __str__() method is a special method that controls what is returned when the object is printed
+__str__() string representation of an obejct
+
+
+
+Data Encapsulation
+==================
+-Keeping data (attributes) and methods that operate on that data together inside a class
+-controlling how that data can be accessed or modified from outside.
+
+
+
+
+Inheritance
+===========
+-Inheritance allows us to define a class that inherits all the methods and properties from another class.
+-Parent class is the class being inherited from, also called base class.
+-Child class is the class that inherits from another class, also called derived class.
+
