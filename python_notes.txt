@@ -366,7 +366,7 @@ Tuple
 =====
 -Tuples are used to store multiple items in a single variable.
 -Tuple items are ordered, unchangeable, and allow duplicate values.
- ex: fruits = ("apple", "banana", "cherry","apple)
+ ex: fruits = ("apple", "banana", "cherry","apple")
 -To determine how many items a tuple has, use the len() function:
  print(len(fruits))
 -To create a tuple with only one item, you have to add a comma after the item, otherwise Python will not recognize it as a tuple.
@@ -413,8 +413,8 @@ Set
 -To add items from another set into the current set, use the update() method
   fruitSet = {"apple", "banana", "cherry"}
   tropical = {"pineapple", "mango", "papaya"}
-  thisset.update(tropical)
-  print(thisset)  # 6 items
+  fruitSet.update(tropical)
+  print(fruitSet)  # 6 items
 -To remove an item in a set, use the remove(), or the discard() method
    fruitSet.discard("banana")
 

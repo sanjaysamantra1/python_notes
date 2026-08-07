@@ -1,0 +1,3 @@
+fruits = ("apple", "banana", "cherry", "strawberry", "raspberry")
+(green, *yellow, red) = fruits
+print(green, yellow,red)
