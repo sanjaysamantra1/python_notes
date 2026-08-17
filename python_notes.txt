@@ -106,7 +106,17 @@ Variables
  y = "John"
  print(x)
  print(y)
+-we can assign the same value to several variables
+ x = y = z = 100   # All three variables refer to 100
 
+-Swapping variables
+ a, b = b, a
+
+-Python is  strongly typed, does not automatically combine incompatible types
+ age = 20
+ name = "Alice"
+ print(age + name)
+-id() returns an integer identifying an object during its lifetime.
 
 
 Variable Scopes  
@@ -512,7 +522,10 @@ object - Real Entity
     return a + b    
 
 -The __str__() method is a special method that controls what is returned when the object is printed
-__str__() string representation of an obejct
+  __str__() string representation of an obejct
+
+__repr__()
+Logging systems call repr() on objects; API responses or UIs call str()
 
 
 
@@ -530,3 +543,72 @@ Inheritance
 -Parent class is the class being inherited from, also called base class.
 -Child class is the class that inherits from another class, also called derived class.
 
+
+
+
+Abstraction
+===========
+-Abstraction means hiding unnecessary implementation details and showing only the essential features to the user.
+-Suppose we create a payment system, The user doesn't need to know the internal implementation
+
+
+Abstract Class:
+-An abstract class is a class that provides a common structure for other classes.
+-an abstract class cannot be instantiated directly if it contains unimplemented abstract methods.
+-Python provides the abc module for this.
+It can contain:
+    Abstract methods
+    Normal methods
+    Attributes
+    Constructors
+-ABC is the base class used to create an abstract class.
+-An abstract method is declared using the @abstractmethod decorator (from abc) and has no real implementation in the base class — it just defines the signature every subclass must follow.
+-Any subclass that doesn't implement all abstract methods also becomes abstract and cannot be instantiated either.
+-Abstract classes enforce a contract: they guarantee that anything calling a method on a subclass will find that method implemented, without needing to know the concrete class.
+
+
+
+Dates
+=====
+-The datetime module is the standard way to work with dates and times.
+
+-Key classes: date (year/month/day), time (hour/min/sec), datetime (both combined), timedelta (a duration/difference), timezone (UTC offsets).
+
+-Dates are immutable — every operation returns a new object rather than modifying in place.
+datetime.now() gives local time; datetime.utcnow() (deprecated in 3.12+) — use datetime.now(timezone.utc) instead for timezone-aware UTC.
+
+-Naive vs aware: a naive datetime has no timezone info; an aware one does. Mixing the two in comparisons raises errors — always be consistent.
+
+-Formatting uses strftime (datetime → string) and parsing uses strptime (string → datetime). Mnemonic: format, parse.
+
+-For real-world timezone handling, use the built-in zoneinfo module (3.9+) instead of pytz.
+
+-timedelta supports arithmetic directly — add/subtract it from dates, or subtract two dates to get a timedelta.
+
+
+Full format code table
+Code	Meaning	Example
+%Y	4-digit year	2026
+%y	2-digit year	26
+%m	month (01-12)	08
+%B	full month name	August
+%b / %h	abbreviated month	Aug
+%d	day of month (01-31)	17
+%A	full weekday name	Monday
+%a	abbreviated weekday	Mon
+%H	hour, 24h (00-23)	14
+%I	hour, 12h (01-12)	02
+%p	AM/PM	PM
+%M	minute (00-59)	30
+%S	second (00-59)	00
+%f	microsecond	500000
+%z	UTC offset (aware only)	+0530
+%Z	timezone name (aware only)	UTC
+%j	day of year (001-366)	229
+%U	week of year, Sunday start	33
+%W	week of year, Monday start	33
+%w	weekday as number (0=Sunday)	1
+%c	full locale datetime	Mon Aug 17 14:30:00 2026
+%x	locale date	08/17/26
+%X	locale time	14:30:00
+%%	literal %	%

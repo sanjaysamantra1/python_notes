@@ -1,0 +1,136 @@
+## Module 0: Setup (Days 1–2)
+- Install Python 3.12+, set up VS Code / PyCharm
+- Learn the REPL, running `.py` scripts, `pip` and virtual environments (`venv`)
+- Git basics for tracking your code
+
+---
+
+## Module 1: Python Fundamentals (Week 1–2)
+- Variables, data types (int, float, str, bool, None)
+- Operators (arithmetic, comparison, logical, assignment)
+- Input/output (`input()`, `print()`, f-strings)
+- Control flow: `if`/`elif`/`else`
+- Loops: `for`, `while`, `break`, `continue`, `range()`
+- **Project:** Command-line calculator or number-guessing game
+
+---
+
+## Module 2: Data Structures (Week 3–4)
+- Strings: slicing, methods, formatting
+- Lists: indexing, slicing, comprehensions, common methods
+- Tuples and immutability
+- Dictionaries: keys/values, iteration, nested dicts
+- Sets: uniqueness, set operations
+- **Project:** Contact book or word-frequency counter
+
+---
+
+## Module 3: Functions & Scope (Week 5)
+- Defining functions, parameters, default/keyword args
+- `*args`, `**kwargs`
+- Return values, scope (local/global), closures
+- Lambda functions
+- Recursion basics
+- **Project:** Small utility library (e.g., text processing toolkit)
+
+---
+
+## Module 4: Error Handling & File I/O (Week 6)
+- `try`/`except`/`finally`, custom exceptions
+- Reading/writing files (text, CSV, JSON)
+- Context managers (`with` statement)
+- **Project:** CSV data cleaner/report generator
+
+---
+
+## Module 5: Object-Oriented Programming (Week 7–8)
+- Classes, objects, `__init__`, attributes, methods
+- Inheritance, polymorphism, encapsulation
+- Dunder methods (`__str__`, `__repr__`, `__eq__`, etc.)
+- Class vs instance vs static methods
+- Composition vs inheritance
+- **Project:** Simple inventory/library management system
+
+---
+
+## Module 6: Functional & Intermediate Concepts (Week 9)
+- List/dict/set comprehensions (advanced)
+- `map`, `filter`, `reduce`
+- Iterators and generators (`yield`)
+- Decorators
+- Modules and packages, `__name__ == "__main__"`
+- **Project:** Build and publish your own small package
+
+---
+
+## Module 7: Working with Data & APIs (Week 10)
+- `requests` for HTTP calls, consuming REST APIs
+- JSON parsing
+- Regular expressions (`re` module)
+- Working with dates/times (`datetime`)
+- **Project:** Weather CLI app or GitHub stats fetcher
+
+---
+
+## Module 8: Testing & Code Quality (Week 11)
+- `unittest` and `pytest`
+- Writing testable code, mocking
+- Type hints (`typing` module)
+- Linting/formatting (`ruff`, `black`)
+- **Project:** Add a full test suite to an earlier project
+
+---
+
+## Module 9: Databases (Week 12)
+- SQL basics recap
+- `sqlite3` module
+- ORMs: intro to SQLAlchemy
+- CRUD operations from Python
+- **Project:** Task tracker with persistent storage
+
+---
+
+## Module 10: Web Development (Week 13–14)
+- Intro to Flask or FastAPI
+- Routes, request/response, templates
+- Building a simple REST API
+- Connecting frontend (relevant since you work in Angular — consuming your Python API from an Angular app)
+- **Project:** Full-stack app: FastAPI backend + simple frontend
+
+---
+
+## Module 11: Data Science Intro (Optional, Week 15)
+- `numpy` basics
+- `pandas` for data manipulation
+- `matplotlib`/`seaborn` for visualization
+- **Project:** Analyze a public dataset (e.g., sales or weather data)
+
+---
+
+## Module 12: Automation & Scripting (Week 16)
+- `os`, `sys`, `shutil`, `argparse`
+- Web scraping basics (`BeautifulSoup`)
+- Scheduling scripts (cron / `schedule` library)
+- **Project:** Automate a repetitive task (file organizer, report emailer, etc.)
+
+---
+
+## Capstone Project Ideas
+- Full-stack app (FastAPI + Angular) with auth and database
+- Data pipeline: scrape → clean → analyze → visualize
+- CLI tool published to PyPI
+- Discord/Slack bot with an integrated API
+
+---
+
+## Recommended Resources
+- **Docs:** docs.python.org (official, best reference)
+- **Practice:** LeetCode, Exercism (Python track), Advent of Code
+- **Books:** *Automate the Boring Stuff with Python*, *Fluent Python* (intermediate/advanced)
+- **Style guide:** PEP 8
+
+## Tips
+- Code daily, even 30 minutes
+- Build projects, don't just do tutorials
+- Read other people's code (open source repos)
+- Write tests early — it becomes a habit, not an afterthought
