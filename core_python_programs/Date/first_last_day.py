@@ -1,22 +1,16 @@
-import calendar
-from datetime import date
+from datetime import date, timedelta
 
-def get_first_last_day(year=None, month=None):
-    today = date.today()
-    year = year or today.year
-    month = month or today.month
+month = int(input("Enter month (1-12): "))
+year = int(input("Enter year: "))
 
-    first_day = date(year, month, 1)
-    last_day = date(year, month, calendar.monthrange(year, month)[1])
+first_date = date(year, month, 1)
 
-    return first_day, last_day
+if month == 12:
+    next_month = date(year + 1, 1, 1)
+else:
+    next_month = date(year, month + 1, 1)
 
+last_date = next_month - timedelta(days=1)
 
-# --- Usage ---
-first_day, last_day = get_first_last_day(2026, 8)
-print(first_day)  # 2026-08-01
-print(last_day)   # 2026-08-31
-
-# Defaults to current month if nothing passed
-first_day, last_day = get_first_last_day()
-print(first_day, last_day)
+print("First date:", first_date)
+print("Last date:", last_date)
