@@ -127,21 +127,41 @@ INTRODUCTION TO APIs
 ======================
 -API (Application Programming Interface) allows communication between applications.
 -Client sends a request and server sends a response.
+ 
+ This API sends list if users when asked
+ https://jsonplaceholder.typicode.com/users
+
 
 
 REST ARCHITECTURE
 -----------------
 -REST = Representational State Transfer
 -Stateless communication: The server does not remember any information about previous requests.
--Resource-based URLs: Resources are identified using URLs
 -Each request contains all required information: Since REST is stateless, every request must contain all data needed for processing
+-Resource-based URLs: Resources are identified using URLs
 
 Examples:
-GET    /users
-GET    /users/1
-POST   /users
-PUT    /users/1
-DELETE /users/1
+GET      /users
+GET      /users/1
+POST     /users
+PUT      /users/1
+PATCH    /users/1
+DELETE   /users/1
+
+
+
+-HTTP is a Protocol, HTTP provides the rules for client-server communication
+-HTTP defines things such as:
+	Request structure
+	Response structure
+	HTTP methods
+	Headers
+	Status codes
+	Request body
+	Response body
+	Caching behavior
+	Authentication mechanisms
+	Content types
 
 
 
@@ -164,18 +184,49 @@ HTTP STATUS CODES
 500 : Internal Server Error
 
 
+
 JSON
 ----
 -JavaScript Object Notation
--Lightweight data exchange format.
--Uses key-value pairs.
+-JSON is a text-based data interchange format used to exchange data between systems.
+-Uses key-value pairs. Key/value separated by :
+-Keys must be strings
+-Keys use double quotes
+-Multiple properties separated by ,
+-No trailing comma
+-No comments
+
+
+Why JSON:
+-Without a standard format, different systems could represent data differently
+-JavaScript object, Python Dictionary , Java object, Database record
+-JSON provides a common representation
+-Human readable
+-Language-independent
 
 Example:
 {
-  "id": 1,
-  "name": "John"
+  "id": 101,
+  "name": "John",
+  "email": "john@example.com",
+  "is_active": true
 }
 
+
+
+Serialization : Converting Python object → JSON
+Deserialization : JSON → Python object
+
+import json
+user = {"id": 101,"name": "John"}
+json_data = json.dumps(user)
+print(json_data)
+print(type(json_data))
+
+json_data = '{"id": 101, "name": "John"}'
+user = json.loads(json_data)
+print(user)
+print(type(user))
 
 
 
@@ -280,7 +331,7 @@ UVICORN
 
 
 uv       = Python project/package manager
-uvicorn  = Python ASGI web server
+uvicorn  = Python ASGI web server (Asynchronous Server Gateway Interface)
 FastAPI  = Web/API framework
 
 
@@ -856,3 +907,4 @@ Database Tables:
 Resources: 
 =========
 https://youtu.be/tMJA41xhBZM?si=arLXMFg7XZ__Kuoj
+https://fastapi.tiangolo.com/tutorial/#run-the-code
