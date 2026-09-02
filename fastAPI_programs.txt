@@ -19,3 +19,4 @@ Resources:
 =========
 https://youtu.be/tMJA41xhBZM?si=arLXMFg7XZ__Kuoj
 https://www.youtube.com/watch?v=tMJA41xhBZM&list=PLUhY5ME1VdIumaSa-m5SQ-ztTL8NWY8Gh&index=1
+https://fastapi.tiangolo.com/tutorial/#run-the-code
