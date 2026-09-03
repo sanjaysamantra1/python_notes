@@ -124,11 +124,11 @@ FastAPI Syllabus
 
 
 INTRODUCTION TO APIs
-======================
+====================
 -API (Application Programming Interface) allows communication between applications.
 -Client sends a request and server sends a response.
  
- This API sends list if users when asked
+ This API sends/returns list if users when asked
  https://jsonplaceholder.typicode.com/users
 
 
@@ -144,9 +144,11 @@ Examples:
 GET      /users
 GET      /users/1
 POST     /users
-PUT      /users/1
+PUT      /users/1   
 PATCH    /users/1
 DELETE   /users/1
+HEAD     /users
+OPTIONS  /users
 
 
 
@@ -165,30 +167,112 @@ DELETE   /users/1
 
 
 
-HTTP METHODS
+HTTP Methods
+============
+GET - Fetch Data from the server (ex: search products)
+      Doesn't change Data
+	  Safe, Idempotent, No Request Body
+	  
+POST - Send Data to create a new resource( sign up )
+	   while fetching the Data if client wants to send parameters in Request body not in Request URL
+	   Not Idempotent, Request Body
+
+PUT - Replace an existing resource completely
+      Idempotent, Full Update , Complete Object in Request Body
+	    
+PATCH - Update only specific fields of a resource
+		update password/mobile 
+		Idempotent, Partial Update , More Efficient than PUT, Request Body
+
+DELETE - remove a resource/delete a record from DataBase
+		 Delete an account
+		 Idempotent, No Body
+		 
+HEAD - Get Headers only	, Same as GET but no response body
+       Used For Checking existance, performance checks
+	   
+OPTIONS - Returns Supported HTTP Methods
+          Used in CORS
+          Browser preflight requests		  
+		 
+
+
+
+
+Idempotent
+----------
+-An HTTP method is idempotent if making the same request multiple times results in the same server state.
+-The response may be same or different, but the data on the server doesnt change after the first request.
+-POST is non-idempotent, Whereas GET,PUT,PATCH,DELETE are idempotent
+
+POST   api/users
+{'name':'sanjay','address':'Bangalore'}
+1st request --> User Created ( id=10 )
+2nd request --> User Created ( id=11 )
+3rd request --> another User Created ( id=12 )
+-Database state changes every time, POST is non-idempotent
+
+
+PUT  api/users/1 
+{'name':'sanjay','address':'Bangalore'}
+1st request --> user becomes  (Sanjay,Bangalore)
+2nd request --> user is still  (Sanjay,Bangalore)
+10th request --> user is still  (Sanjay,Bangalore)
+-DataBase state stays the same, PUT is idempotent
+
+
+
+PUT vs POST
+-----------
+-PUT for UPDATE operations, POST for CREATE operations.
+-PUT is idempotent, where POST is non-idempotent.
+-Use PUT when you want to modify a singular resource which is already a part of resources collection.
+-Use POST when you want to add a child resource under resources collection.
+
+
+PUT vs PATCH
 ------------
-GET    : Retrieve data
-POST   : Create data
-PUT    : Update entire resource
-PATCH  : Update partial resource
-DELETE : Delete resource
+-PUT is used to replace a complete resource.
+-PATCH is used to apply partial modifications to a resource.
 
-HTTP STATUS CODES
------------------
-200 : Success
-201 : Created
-400 : Bad Request
-401 : Unauthorized
-403 : Forbidden
-404 : Not Found
-500 : Internal Server Error
+	
+	
+http status codes
+=================
+1xx Informational  (100-Continue,101-switching Protocols,102-processing)
+2xx Success		   (200-OK,201-created,202-accepted,204-No Content)
+3xx Redirection	   (300-Multiple Choices,301-Moved Permanently,302-Found,304-Not Modified)
+4xx Client Error   (400-Bad Request,401-Unauthorized,403-Forbidden,404-Not Found)
+5xx Server Error   (500-Internal Server Error,502-Bad Gateway,503-Service Unavailable)
 
+
+
+
+create a mock REST API using json-server
+=========================================
+1.install json-server
+  npm i -g json-server
+ 
+2. create a folder & create a json file with some data (d:/sample_data/employees.json)
+   employees.json (filename can be anything.json) (copy con employees.json)(MAC: touch employees.json)
+ 
+3. start json server(go to the folder where json file is present,run the below command in cmd)
+   json-server employees.json
+   
+   
+   
+POSTMAN
+=======
+-application used to Test APIs.
+ https://www.postman.com/downloads/
+ 
+ 
 
 
 JSON
-----
+======
 -JavaScript Object Notation
--JSON is a text-based data interchange format used to exchange data between systems.
+-JSON is a text-based data interchange format used to exchange data between client & server.
 -Uses key-value pairs. Key/value separated by :
 -Keys must be strings
 -Keys use double quotes
@@ -234,44 +318,34 @@ print(type(user))
 
 FastAPI Overview
 ================
--High Performance
--Easy to Learn
--Type Hint Support
--Automatic Validation
--Automatic API Documentation
--Async Support
--OpenAPI Standard
+-High Performance : 
+	-FastAPI is built on top of Starlette, an ASGI-based web framework, which allows FastAPI to handle asynchronous requests efficiently
+	-while the request is waiting for an I/O operation, the server can work on other requests instead of blocking the thread
 
+-Easy to Learn : 
+	-FastAPI uses normal Python concepts rather than introducing a completely different programming model
+	
+-Type Hint Support : 
+	-specify expected types : Request validation, Response validation
+	
+-Automatic Validation :
+	-FastAPI integrates with Pydantic to validate incoming data
+	
+-Automatic API Documentation :
+	-FastAPI automatically generates interactive API documentation.
+	
+-Async Support : 
+	-supports asynchronous programming model (async, await)
+	
+-OpenAPI Standard : 
+	-OpenAPI is a standard for describing HTTP APIs.  API documentation
 
-
-
-Installation
-============
-pip install "fastapi[standard]"
-pip install uvicorn
-
-
-Create and activate a virtual environment
------------------------------------------
--use a virtual environment to isolate the packages you install for each project.
-  python -m venv .venv
-  this command creates a new virtual environment in a directory called .venv
-  
-  
-  source .venv/Scripts/activate
-   .\env\Scripts\activate
--Do this every time you start a new terminal session to work on the project.
-Get-Command python
-
--If we have a requirements.txt, you can now use it to install its packages.
-  pip install -r requirements.txt
 
 
 
 PIP
 ===
--Python's package manager used to install, update, and remove external libraries.
-
+-Python's inbuilt package manager used to install, update, and remove external libraries.
 
 Install Package: pip install fastapi
 Install Specific Version: pip install fastapi==0.115.0
@@ -286,23 +360,62 @@ UV
 ===
 -it’s a very fast Python package and project manager.
 -It can replace what we normally use pip, venv, and pip-tools for.
--install UV:
+-install UV: pip install uv
+			(OR)
     Windows: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
     MAC : curl -LsSf https://astral.sh/uv/install.sh | sh
 
 -Check UV Installation
     uv --version
+
+
+
+Create FastAPI Application using pip
+====================================
+1. create a folder (project_1)
+
+2. create a virtual Environment
+   python -m venv .venv
+   
+3. Activate the virtual Environment
+  .venv\Scripts\Activate.ps1
+
+4. install fastApi and uvicorn  
+    pip install fastapi
+	pip install "uvicorn[standard]"  
+	
+5. Run the application
+   uvicorn main:app --reload
+
+
+
+
+Create FastAPI Application using uv
+====================================
 -Create a project
-    uv init project_1 --bare
+    uv init  / uv init project_1 --bare
     cd project_1
     uv add "fastapi[standard]"
     uv run fastapi dev main.py
 
 --bare: create only the minimal pyproject.toml file, without generating a sample main.py, README.md, or other files
 
-Why "fastapi[standard]" instead of fastapi?
-===========================================
-installs FastAPI plus the standard optional dependencies used for development, including the FastAPI CLI and Uvicorn.
+application runs at: http://127.0.0.1:8000
+Swagger Documentation: http://127.0.0.1:8000/docs
+
+uv run fastapi dev main.py
+│  │   │       │    │
+│  │   │       │    └── FastAPI application file
+│  │   │       └─────── development mode
+│  │   └─────────────── FastAPI CLI
+│  └────────────────── run command inside uv environment
+└───────────────────── uv package/project manager
+
+
+
+
+Browser / Client   ──▶ HTTP ──▶  Uvicorn   ──▶ ASGI──▶  FastAPI  ──▶  Starlette  ──▶  Our Endpoint
+
 
 
 Traditional Python             uv
@@ -312,6 +425,8 @@ pip install fastapi      →     uv add fastapi
 pip install -r ...       →     uv sync
 python main.py           →     uv run python main.py
 uvicorn main:app         →     uv run uvicorn main:app
+
+
 
 
 UVICORN
@@ -326,7 +441,6 @@ UVICORN
     - Accept requests
     - Send responses
 -Uvicorn performs all these above tasks.
-
 
 
 
@@ -364,41 +478,25 @@ project/
 
 
 
-Run Application
-===============
--fastapi dev main.py --reload(without uvicorn)
-
-uvicorn main:app --reload
-    OR
-python -m uvicorn main:app --reload (main-fileName)
-
-application runs at: http://127.0.0.1:8000
-Swagger Documentation: http://127.0.0.1:8000/docs
-
-
-if app doesnt start
-====================
-python -m pip install --force-reinstall uvicorn
-uvicorn --version
-python -m pip show uvicorn
-python -c "import sys; print(sys.executable)"
-python -m site
 
 
 
 ROUTING
 ========
 GET Route:
-@app.get("/users")
+	@app.get("/users")
 
 POST Route:
-@app.post("/users")
+	@app.post("/users")
 
 PUT Route:
-@app.put("/users/{id}")
+	@app.put("/users/{id}")
 
 DELETE Route:
-@app.delete("/users/{id}")
+	@app.delete("/users/{id}")
+
+
+
 
 PATH PARAMETERS
 ===============
