@@ -343,22 +343,29 @@ FastAPI Overview
 
 
 
-PIP
-===
+PIP : Python Package Installer
+==============================
+-Python provides many features through its standard library(json,os,datetime)
+-But applications often need external libraries:FastAPI,Pydantic,SQLAlchemy
 -Python's inbuilt package manager used to install, update, and remove external libraries.
+-pip downloads packages from PyPI — Python Package Index.
+ https://pypi.org/
 
-Install Package: pip install fastapi
-Install Specific Version: pip install fastapi==0.115.0
-Upgrade Package: pip install --upgrade fastapi
-Uninstall Package: pip uninstall fastapi
-View Installed Packages: pip list
-Show Package Information: pip show fastapi
-
+	Check Pip Version : pip --version
+	Install Package: pip install fastapi
+	Install Specific Version: pip install fastapi==0.115.0
+	Upgrade Package: pip install --upgrade fastapi
+	Uninstall Package: pip uninstall fastapi
+	View Installed Packages: pip list
+	Show Package Information: pip show fastapi
+    save dependencies into a file : pip freeze > requirements.txt
+	install packages from requirements: pip install -r requirements.txt
 
 
 UV
 ===
 -it’s a very fast Python package and project manager.
+-manage the whole Python project workflow
 -It can replace what we normally use pip, venv, and pip-tools for.
 -install UV: pip install uv
 			(OR)
@@ -392,16 +399,29 @@ Create FastAPI Application using pip
 
 Create FastAPI Application using uv
 ====================================
--Create a project
-    uv init  / uv init project_1 --bare
-    cd project_1
-    uv add "fastapi[standard]"
-    uv run fastapi dev main.py
+1. Create a folder (Project_1)
 
---bare: create only the minimal pyproject.toml file, without generating a sample main.py, README.md, or other files
+2. create a new uv project
+   uv init
+   
+3. install fastAPI using uv
+   uv add fastapi[standard]
+
+4. install packages
+   uv sync
+   
+5. Run the Appliation
+   uv run fastapi dev main.py
 
 application runs at: http://127.0.0.1:8000
 Swagger Documentation: http://127.0.0.1:8000/docs
+
+
+
+pyproject.toml = project configuration + dependency requirements
+uv.lock = exact dependency versions for reproducible installs
+
+
 
 uv run fastapi dev main.py
 │  │   │       │    │
@@ -418,13 +438,11 @@ Browser / Client   ──▶ HTTP ──▶  Uvicorn   ──▶ ASGI──▶  
 
 
 
-Traditional Python             uv
-----------------------------------------------
-python -m venv .venv     →     uv venv
-pip install fastapi      →     uv add fastapi
-pip install -r ...       →     uv sync
-python main.py           →     uv run python main.py
-uvicorn main:app         →     uv run uvicorn main:app
+
+fastapi  vs fastapi[standard]
+=============================
+fastapi = Core FastAPI framework; 
+fastapi[standard] = FastAPI + recommended standard dependencies/tools like Uvicorn.
 
 
 
@@ -444,9 +462,12 @@ UVICORN
 
 
 
-uv       = Python project/package manager
-uvicorn  = Python ASGI web server (Asynchronous Server Gateway Interface)
-FastAPI  = Web/API framework
+Python        → programming language / interpreter
+pip           → package installer
+uv            → Python project/package/environment manager
+FastAPI       → web framework
+Starlette     → ASGI web framework underneath FastAPI
+Uvicorn       → ASGI server
 
 
 
