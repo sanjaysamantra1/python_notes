@@ -99,11 +99,6 @@ FastAPI Syllabus
 -Application Logging
 -Error Logging
 
--Docker
--Docker Fundamentals
--Dockerizing FastAPI Applications
--Docker Compose Basics
-
 -Deployment
 -Production Configuration
 -Uvicorn Workers
@@ -316,7 +311,7 @@ print(type(user))
 
 
 
-FastAPI Overview
+FastAPI Benefits
 ================
 -High Performance : 
 	-FastAPI is built on top of Starlette, an ASGI-based web framework, which allows FastAPI to handle asynchronous requests efficiently
@@ -454,10 +449,10 @@ UVICORN
 -FastAPI only defines API routes and business logic.
 -It does not listen for HTTP requests by itself.
     A web server is required to:
-    - Start the application
-    - Listen on a port
-    - Accept requests
-    - Send responses
+    -Start the application
+    -Listen on a port
+    -Accept requests
+    -Send responses
 -Uvicorn performs all these above tasks.
 
 
@@ -483,6 +478,7 @@ def home():
     return {"message":"Hello FastAPI"}
 	
 	
+	
 
 PROJECT STRUCTURE
 =================
@@ -502,8 +498,12 @@ project/
 
 
 
-ROUTING
-========
+Routing in FastAPI
+=================
+-Routing is the process of mapping an HTTP request to a specific Python function.
+-FastAPI provides decorators for different HTTP methods.
+-A FastAPI application can have many routes.
+
 GET Route:
 	@app.get("/users")
 
@@ -519,21 +519,43 @@ DELETE Route:
 
 
 
-PATH PARAMETERS
+Path Parameters
 ===============
-Used to pass values through URL.
+-A path parameter is a variable value embedded directly into the URL path.
+-Used to pass values through URL. defined using {}
+-FastAPI supports Path Parameter with Type Hint, when not followed FastAPI automatically returns a validation error.
 
-Example:
-@app.get("/users/{id}")
-def get_user(id:int):
-    return {"id":id}
+@app.get("/users/{user_id}")
+def get_user(user_id:int):  #user_id must be an integer
+    return {
+        "user_id": user_id
+    }
 
-URL:
-http://localhost:8000/users/101
+Request: http://localhost:8000/users/101
 
-QUERY PARAMETERS
+
+Multiple Path Parameters:
+@app.get("/users/{user_id}/orders/{order_id}")
+def get_order(user_id: int, order_id: int):
+    return {
+        "user_id": user_id,
+        "order_id": order_id
+    }
+
+
+
+
+Query Parameters
 ================
-Used for filtering and pagination.
+-A query parameter comes after ? in the URL.
+-Used for filtering and pagination.
+	ex: GET /products?category=electronics
+-Query parameters are separated by & 
+  /products?category=electronics&min_price=10000&max_price=50000
+-By default, query parameters are required. FastAPI returns a validation error when Query Parameter is not provided
+-Optional Query Parameters: Use a default value
+ def get_products(category: str | None = None):
+ 
 
 Example:
 @app.get("/users")
@@ -543,92 +565,99 @@ def get_users(page:int=1,size:int=10):
 URL:
 http://localhost:8000/users?page=1&size=10
 
-REQUEST BODY
+
+
+
+
+
+
+Request Body
 ============
-Used to send data to server.
+-Data Sent from client to server with POST, PUT, PATCH requests.
+-We Describe the shape of Request Body with a pydantic model
+-FastAPI then parses, validates, converts and documents it automatically
+
 
 Example:
 from pydantic import BaseModel
 
 class User(BaseModel):
-    name:str
-    age:int
+    name:str  		# required field
+    age:int   		# required field
+	address:str | None = None  #optional field
 
 @app.post("/users")
 def create_user(user:User):
     return user
 
-RESPONSE MODEL
+
+-For stricter input, use validation rules
+
+ from pydantic import BaseModel, Field, EmailStr
+ class User(BaseModel):
+    name:str = Field(min_length=2, max_length=100)		
+    email:EmailStr
+    age:int = Field(ge=18,le=100)	
+	address:str | None = None  
+
+
+
+
+
+Response Model
 ==============
-Used to validate and format response.
-
-Example:
-@app.get("/users/{id}",response_model=User)
+-Used to validate and format response.
 
 Benefits:
--Validation
--Filtering
--Auto Documentation
+	-Validation
+	-Filtering
+	-Auto Documentation
 
-TYPE HINTS
-==========
 Example:
-def add(a:int,b:int)->int:
-    return a+b
+from pydantic import BaseModel
+class User(BaseModel):
+    id: int
+    name: str
+    username: str
+    email: str
+	
 
-Benefits:
--Validation
--Better IDE Support
--Cleaner Code
+@app.get("/users/{user_id}", response_model=User)
+def get_user(user_id: int):
+	return user object
 
-PYDANTIC MODELS
+
+-Response Model for a List: @app.get("/users", response_model=list[UserResponse])
+
+
+
+
+
+
+Pydantic Models
 ===============
+-Pydantic Models define the structure of data and handle validation, parsing, and serialization.
 Used for:
--Validation
--Serialization
--Data Parsing
+	-Validation : Checks whether the incoming data matches the expected structure and rules.
+	-Serialization
+	-Data Parsing
+
 
 Example:
-class Employee(BaseModel):
-    name:str
-    salary:float
-
-FIELD VALIDATION
-================
-from pydantic import Field
-
 class User(BaseModel):
-    age:int = Field(gt=18)
+    name: str
+    age: int = Field(ge=18) # field validation
+	phone: Optional[str] = None  # optional field
+	
+	
+	
 
-Validation Rules:
-gt : greater than
-ge : greater than equal
-lt : less than
-le : less than equal
-
-OPTIONAL FIELDS
-===============
-from typing import Optional
-
-class User(BaseModel):
-    phone: Optional[str] = None
-
-NESTED MODELS
-=============
-class Address(BaseModel):
-    city:str
-
-class User(BaseModel):
-    name:str
-    address:Address
-
-DEPENDENCY INJECTION
+Dependency Injection
 ====================
-Used for reusable logic.
+-A dependency is reusable logic that a route needs, and FastAPI automatically executes and provides its result.
 
 Example:
 from fastapi import Depends
-
 def common():
     return "dependency"
 
@@ -641,32 +670,64 @@ Benefits:
 -Clean Architecture
 -Loose Coupling
 
+
+
+
+
+
 HEADERS
 =======
-from fastapi import Header
+-Headers contain metadata about the HTTP request.
 
-@app.get("/")
-def home(token:str=Header()):
-    return token
+from fastapi import FastAPI, Header, Response
+app = FastAPI()
+@app.get("/hello")
+async def hello(
+    response: Response,
+    authorization: str | None = Header(default=None),
+    x_request_id: str | None = Header(default=None),
+):
+    # Request headers received from the client
+    print("Authorization:", authorization)
+    print("X-Request-ID:", x_request_id)
+
+    # Response headers sent back to the client
+    response.headers["X-Response-ID"] = "response-123"
+    response.headers["X-Custom-Header"] = "hello"
+
+    return {
+        "message": "Hello",
+        "received_headers": {
+            "authorization": authorization,
+            "x_request_id": x_request_id,
+        },
+    }
+
+
+
+
 
 COOKIES
 =======
-from fastapi import Cookie
+-A cookie is small data stored by the browser and automatically sent with requests to the relevant site.
 
+from fastapi import Cookie
 @app.get("/")
 def home(session:str=Cookie()):
     return session
 
+
+
+
 FORM DATA
 =========
-from fastapi import Form
+-Form data is data sent using: multipart/form-data
+-commonly used for: HTML forms, File uploads, 
 
-@app.post("/login")
-def login(
-    username:str=Form(),
-    password:str=Form()
-):
-    pass
+
+
+
+
 
 FILE UPLOAD
 ===========
@@ -675,6 +736,12 @@ from fastapi import UploadFile
 @app.post("/upload")
 def upload(file:UploadFile):
     return file.filename
+	
+	
+	
+	
+	
+	
 
 RESPONSE TYPES
 ==============
@@ -690,6 +757,11 @@ return JSONResponse(
     status_code=200,
     content={"message":"success"}
 )
+
+
+
+
+
 
 DATABASE INTEGRATION
 ====================
