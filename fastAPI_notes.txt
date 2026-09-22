@@ -5,115 +5,43 @@ FastAPI Syllabus
 -HTTP Methods (GET, POST, PUT, PATCH, DELETE)
 -Status Codes 
 -JSON
-
--FastAPI Overview and Features
--Environment Setup (Python, Virtual Environment, FastAPI, Uvicorn)
--Project Structure and Best Practices
--Creating First FastAPI Application
-
--Routing
+-FastAPI Introduction
+-uv + Project Setup
+-First FastAPI App
+-Routes
 -Path Parameters
 -Query Parameters
 -Request Body
--Response Models
--Data Validation
--Type Hints
-
 -Pydantic Models
--Field Validation
--Optional Fields
--Nested Models
--Custom Validators
--Request and Response Schemas
-
--Dependency Injection
--Reusable Dependencies
--Database Dependencies
--Custom Dependencies
-
--Request Handling
+-Validation
+-Response Models
+-Status Codes
+-CRUD — In-Memory
 -Headers
 -Cookies
 -Form Data
--File Uploads
--File Downloads
-
--Response Handling
--JSONResponse
--HTMLResponse
--StreamingResponse
--Custom Responses
-
--Database Integration
--SQL Fundamentals
--SQLAlchemy ORM
--Database Sessions
--CRUD Operations
--Relationships
--Transactions
--Database Migrations
-
+-HTTPException
+-Exception Handling - try, catch
+-Dependency Injection
+-Middleware
+-SQL Basics
+-SQLAlchemy
+-PostgreSQL
+-CRUD — Database
+-CORS
 -Authentication
 -Password Hashing
--JWT Authentication
--Token Generation and Validation
--OAuth2 Security
-
--Authorization
--Role Based Access Control (RBAC)
--Protected Endpoints
--Custom Permission Handling
-
--Middleware
--CORS Middleware
--Logging Middleware
--Custom Middleware
-
--Exception Handling
--HTTP Exceptions
--Custom Exceptions
--Global Exception Handling
-
+-JWT
+-Async / Await
 -Background Tasks
--Asynchronous Programming
--Async/Await
--Concurrency in FastAPI
-
--API Documentation
--Swagger UI
--ReDoc
--OpenAPI Specification
-
--Configuration Management
--Environment Variables
--Settings Management
-
+-File Upload
+-APIRouter
+-Project Architecture
 -Testing
--Pytest
--TestClient
--Unit Testing
--API Testing
--Mocking Dependencies
-
--Logging
--Application Logging
--Error Logging
-
+-Environment Variables
+-Docker
 -Deployment
--Production Configuration
--Uvicorn Workers
--Nginx Reverse Proxy
--Deployment Overview
-
--Project Development
--Authentication Module
--User Management Module
--Employee Management Module
--Product Management Module
--Search and Pagination
--API Documentation
--Security Best Practices
--Project Deployment
+-Final Production Project
 
 
 
@@ -164,29 +92,29 @@ OPTIONS  /users
 
 HTTP Methods
 ============
-GET - Fetch Data from the server (ex: search products)
+GET -Fetch Data from the server (ex: search products)
       Doesn't change Data
 	  Safe, Idempotent, No Request Body
 	  
-POST - Send Data to create a new resource( sign up )
+POST -Send Data to create a new resource( sign up )
 	   while fetching the Data if client wants to send parameters in Request body not in Request URL
 	   Not Idempotent, Request Body
 
-PUT - Replace an existing resource completely
+PUT -Replace an existing resource completely
       Idempotent, Full Update , Complete Object in Request Body
 	    
-PATCH - Update only specific fields of a resource
+PATCH -Update only specific fields of a resource
 		update password/mobile 
 		Idempotent, Partial Update , More Efficient than PUT, Request Body
 
-DELETE - remove a resource/delete a record from DataBase
+DELETE -remove a resource/delete a record from DataBase
 		 Delete an account
 		 Idempotent, No Body
 		 
-HEAD - Get Headers only	, Same as GET but no response body
+HEAD -Get Headers only	, Same as GET but no response body
        Used For Checking existance, performance checks
 	   
-OPTIONS - Returns Supported HTTP Methods
+OPTIONS -Returns Supported HTTP Methods
           Used in CORS
           Browser preflight requests		  
 		 
@@ -394,10 +322,9 @@ Create FastAPI Application using pip
 
 Create FastAPI Application using uv
 ====================================
-1. Create a folder (Project_1)
+1. uv init fastapi_project_1 --bare
 
-2. create a new uv project
-   uv init
+2. cd fastapi_project_1
    
 3. install fastAPI using uv
    uv add fastapi[standard]
@@ -407,6 +334,7 @@ Create FastAPI Application using uv
    
 5. Run the Appliation
    uv run fastapi dev main.py
+   uv run uvicorn main:app
 
 application runs at: http://127.0.0.1:8000
 Swagger Documentation: http://127.0.0.1:8000/docs
@@ -480,8 +408,8 @@ def home():
 	
 	
 
-PROJECT STRUCTURE
-=================
+FastAPI Project Folder Structure
+================================
 project/
 |
 ├── main.py
@@ -493,6 +421,14 @@ project/
 ├── utils/
 └── tests/
 
+
+Client request --> Router --> Controller --> Service --> Controller --> Response/Error --> Router --> Client
+
+main.py : The main application only creates the FastAPI app and registers the routes.
+employee_routes.py : Routes define the URLs and HTTP methods.
+employee_controller.py : The controller handles the HTTP/API-level logic.
+employee_service.py : The service contains the business logic.
+employees_schema.py : Pydantic models define the request and response structure.
 
 
 
@@ -567,7 +503,20 @@ http://localhost:8000/users?page=1&size=10
 
 
 
+Pydantic Models
+===============
+-Pydantic Models define the structure of data and handle validation, parsing, and serialization.
+Used for:
+	-Validation : Checks whether the incoming data matches the expected structure and rules.
+	-Serialization
+	-Data Parsing
 
+
+Example:
+class User(BaseModel):
+    name: str
+    age: int = Field(ge=18) 	 # field validation
+	phone: Optional[str] = None  # optional field
 
 
 
@@ -576,7 +525,7 @@ Request Body
 -Data Sent from client to server with POST, PUT, PATCH requests.
 -We Describe the shape of Request Body with a pydantic model
 -FastAPI then parses, validates, converts and documents it automatically
-
+-Extra fields passed in payload are ignored
 
 Example:
 from pydantic import BaseModel
@@ -585,6 +534,7 @@ class User(BaseModel):
     name:str  		# required field
     age:int   		# required field
 	address:str | None = None  #optional field
+	status: str = "Active"  # default value
 
 @app.post("/users")
 def create_user(user:User):
@@ -610,19 +560,19 @@ Response Model
 
 Benefits:
 	-Validation
-	-Filtering
+	-Readability
 	-Auto Documentation
 
 Example:
 from pydantic import BaseModel
-class User(BaseModel):
+class UserResponse(BaseModel):
     id: int
     name: str
     username: str
     email: str
 	
 
-@app.get("/users/{user_id}", response_model=User)
+@app.get("/users/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
 	return user object
 
@@ -632,52 +582,47 @@ def get_user(user_id: int):
 
 
 
+Status Codes
+============
+-response contains a status code that tells the client the result of the request.
+-200 is FastAPI's default for a normal successful response
+-201 Created is explicitly specified because a successful POST that creates a resource should normally return 201, rather than FastAPI's default 200 OK.
+-Explicitely mentioning status_code=200 is not required
+
+@app.get("/users/{id}", status_code=200) 
+@app.post("/users", status_code=201)
 
 
-Pydantic Models
-===============
--Pydantic Models define the structure of data and handle validation, parsing, and serialization.
-Used for:
-	-Validation : Checks whether the incoming data matches the expected structure and rules.
-	-Serialization
-	-Data Parsing
+from fastapi import status
+@app.post(
+    "/employees",
+    status_code=status.HTTP_201_CREATED
+)
 
 
-Example:
-class User(BaseModel):
-    name: str
-    age: int = Field(ge=18) # field validation
-	phone: Optional[str] = None  # optional field
 	
+Request Object
+==============
+
+@app.get("/inspect")
+async def inspect_request(request: Request):
+    return {
+        "method": request.method,
+        "client_ip": request.client.host if request.client else None,
+        "user_agent": request.headers.get("user-agent"),
+        "cookies": request.cookies,
+        "query_keys": list(request.query_params.keys())
+    }	
 	
-	
-
-Dependency Injection
-====================
--A dependency is reusable logic that a route needs, and FastAPI automatically executes and provides its result.
-
-Example:
-from fastapi import Depends
-def common():
-    return "dependency"
-
-@app.get("/")
-def home(data=Depends(common)):
-    return data
-
-Benefits:
--Reusable Code
--Clean Architecture
--Loose Coupling
 
 
-
-
-
-
-HEADERS
+Headers
 =======
 -Headers contain metadata about the HTTP request.
+
+Request headers: The headers sent from Client to Server
+Response headers: The headers sent from Server to Client
+
 
 from fastapi import FastAPI, Header, Response
 app = FastAPI()
@@ -707,30 +652,45 @@ async def hello(
 
 
 
-COOKIES
+Cookies
 =======
 -A cookie is small data stored by the browser and automatically sent with requests to the relevant site.
 
-from fastapi import Cookie
-@app.get("/")
-def home(session:str=Cookie()):
-    return session
+from fastapi import Request
+
+@router.get("/getCookies") 
+def read_all_cookies(request:Request):
+    return {
+        "message" : "you are on /getCookies Route",
+        "method" : request.method,
+        "url" : request.url,
+        "Cookies" : request.cookies,
+    }
 
 
 
 
-FORM DATA
+Form Data 
 =========
 -Form data is data sent using: multipart/form-data
--commonly used for: HTML forms, File uploads, 
+-commonly used for: HTML forms, File uploads
+
+
+from fastapi import Form
+@app.post("/login")
+def login(username: str = Form(), password: str = Form()):
+    return {"username": username, "password": password}
 
 
 
 
-
-
-FILE UPLOAD
+File Upload
 ===========
+-FastAPI supports file uploads using UploadFile and File.
+-File validation: File type, File extension, File size, File name, Storage location
+
+
+
 from fastapi import UploadFile
 
 @app.post("/upload")
@@ -740,23 +700,107 @@ def upload(file:UploadFile):
 	
 	
 	
-	
-	
 
-RESPONSE TYPES
-==============
-JSONResponse
-HTMLResponse
-StreamingResponse
-FileResponse
+
+
+
+
+Dependency Injection
+====================
+-A dependency is reusable logic that a route needs, and FastAPI automatically executes and provides its result.
+
+Benefits:
+	-Reusable Code
+	-Clean Architecture
+	-Loose Coupling
 
 Example:
-from fastapi.responses import JSONResponse
+from fastapi import Depends
 
-return JSONResponse(
-    status_code=200,
-    content={"message":"success"}
+def get_current_user():
+    return {"id": 101, "name": "Sanjay", "role": "admin"}
+
+@app.get("/products")
+def get_products(user=Depends(get_current_user)):
+    return {"message": f"Products requested by {user['name']}", "user": user}
+
+
+
+
+
+
+
+Middleware
+==========
+-Common logic that runs around every request
+Client --> Middleware --> Route --> Response 
+
+async def log_request(request: Request, call_next):
+	execute middleware logic
+	call_next
+
+
+
+Logging
+Request timing
+CORS
+Adding response headers
+Global request/response processing
+
+
+Dependency = logic needed by a particular route. 
+			 ex: several APIs need the current user.
+Middleware = logic that runs around every request.
+			 ex: you want to log every request.
+
+
+|                              | Dependency Injection            | Middleware                 |	
+| -----------------------------| --------------------------------| ---------------------------|
+| Scope                        | Selected routes                 | All requests               |
+| Purpose                      | Provide reusable logic/data     | Process request/response   |
+| Runs                         | When route declares `Depends()` | Automatically              |
+| Can access route parameters? | Yes, through dependencies       | Not directly               |
+| Can return data to route?    | Yes                             | No, not as dependency data |
+| Typical use                  | Auth, DB session                | Logging, CORS              |
+| Position                     | Before route execution          | Around route execution     |
+
+
+
+
+HTTPException
+=============
+-Use HTTPException when you want to stop the request and return an HTTP error response.
+
+Note: Use HTTPException for a known API/business error. Use try/except when you need to catch a Python/runtime exception.
+
+
+
+
+
+CORS
+====
+CORS = Cross-Origin Resource Sharing
+
+-It is a browser security mechanism that controls whether JavaScript running on one origin is allowed to access resources from another origin.
+-CORS Does Not Mean "Backend Blocks Requests". CORS is primarily a browser-enforced security mechanism.
+-The browser has a security concept called the:Same-Origin Policy , It restricts JavaScript from freely interacting with resources belonging to another origin.
+
+-An origin consists of: Protocol + Host + Port
+-Changing any one of these can make it a different origin.
+-CORS decides which origins can access the API from a browser; CORSMiddleware enforces that policy in FastAPI.
+
+
+
+
+ex:
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
+
 
 
 
@@ -771,13 +815,18 @@ DATABASE INTEGRATION
 ORM
 ===
 ORM = Object Relational Mapping
-
 Table ↔ Class
 
+Python Code -->  ORM  --> SQL Statements  -->  DataBase  --> ORM  -->  Python Objects --> Response
+
+
+
 Advantages:
--No Raw SQL
+-No Raw SQL : Hides the underlying SQL structure
 -Easier Maintenance
 -Database Independent
+
+
 
 SQLALCHEMY MODEL
 ================
@@ -880,67 +929,46 @@ Example:
 if user.role != "admin":
     raise HTTPException(403)
 
-MIDDLEWARE
-==========
-Middleware executes before and after requests.
 
-Uses:
--Logging
--Authentication
--Monitoring
 
-Example:
-@app.middleware("http")
-async def logger(request, call_next):
-    response = await call_next(request)
-    return response
 
-CORS
-====
-Cross-Origin Resource Sharing
 
-Required when frontend and backend run on different domains.
+Async FastAPI
+=============
+-Synchronous vs asynchronous execution
+-Blocking vs non-blocking operations
+-I/O-bound vs CPU-bound tasks
+-Concurrency vs parallelism
+-Why async is useful for APIs
+-Event loop concept
 
-Example:
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"]
-)
 
-EXCEPTION HANDLING
-==================
-Used to handle application errors.
 
-Example:
-raise HTTPException(
-    status_code=404,
-    detail="User Not Found"
-)
 
-GLOBAL EXCEPTION HANDLING
-=========================
--Centralized error handling.
--Consistent error responses.
+-FastAPI Supports asyncio , so our API can handle multiple waiting tasks efficiently.
+-Databse calls, Http Requests , File I/O
+-Use asyncio.gather() to run Multiple Async Operations Concurrently
+ user, order = await asyncio.gather(get_user(), get_orders())
+-async def automatically doesn't make everything faster. The benefit comes when the endpoint performs non-blocking I/O.
+-
 
-ASYNC PROGRAMMING
-=================
-Example:
-@app.get("/")
-async def home():
-    return {"message":"async"}
 
-Keywords:
--async
--await
+def endpoint : Regular Synchronous Code
+async def endpoints : asynchronous code; it can await non-blocking operations
+await : pauses only the current request while its I/O is pending, allows the server to work on other requests
 
-Benefits:
--Better Performance
--Concurrent Requests
--Efficient I/O Operations
+
+CPU-Bound vs I/O-Bound:
+I/O Operations: Database,  HTTP API, File Operations, Redis
+CPU-Bound : Large calculations , Video processing
+
+
+
+
 
 BACKGROUND TASKS
 ================
-Used for long-running operations.
+-Used for long-running operations.
 
 Examples:
 -Email Sending
@@ -948,14 +976,19 @@ Examples:
 -Report Generation
 
 Example:
-from fastapi import BackgroundTasks
-
 def send_email():
-    pass
+    for i in range(50000):
+        print(f"Sending email...{i}")
 
-@app.post("/")
-def create(bg:BackgroundTasks):
-    bg.add_task(send_email)
+@app.get("/test_background")
+async def test_background(background_tasks: BackgroundTasks):
+    background_tasks.add_task(send_email)
+    return {"message": "Registration successful"}
+	
+	
+	
+	
+	
 
 API DOCUMENTATION
 =================
@@ -975,19 +1008,119 @@ OPENAPI
 -Industry standard API specification.
 -Automatically generated by FastAPI.
 
+
+
+
+
+
 ENVIRONMENT VARIABLES
 =====================
-Store:
--Database URLs
--JWT Secrets
--API Keys
+-Environment variables are used to store configuration outside your source code.
+-Environment variables : DataBase URL , REDIS_URL, JWT Secret
+-Create a .env file to store all the variables, Do not commit .env to Git.
 
-Example:
-DATABASE_URL=mysql://...
-JWT_SECRET=mysecret
 
-Load using:
-python-dotenv
+Step-1 : Create different Environment file for different envs & add Variables inside them
+         .env.dev   --> DATABASE_URL = "postgresql://postgres:berhampur@localhost:5432/dev_DB"
+		 .env.qa    --> DATABASE_URL = "postgresql://postgres:berhampur@localhost:5432/dev_QA"
+		 .env.prod  --> DATABASE_URL = "postgresql://postgres:berhampur@localhost:5432/dev_PROD"
+		 
+Step-2 : install pydantic_settings 
+         uv add pydantic_settings
+
+        class Settings(BaseSettings):
+			database_url: str
+			app_name: str
+			model_config = SettingsConfigDict(
+				env_file=os.getenv("ENV_FILE", ".env.dev")
+			)
+        settings = Settings()		 
+
+Step-3 : Read the setting variables 
+         return {
+			"message" : "Hello",
+			"dataBase_url": settings.database_url,
+			"app_name": settings.app_name,
+        }
+
+Step-4: How to start the application using diff .env file
+        $env:ENV_FILE=".env.prod"
+        uv run uvicorn main:app
+
+
+
+
+
+
+Redis For Caching
+=================
+-Redis Stands for 'Remote Dictionary Server'.
+-fast, open source, in-memory, key-value data store.
+-Redis speed makes it ideal for caching database queries, complex computations, API calls, and session state.
+-The stream data type enables high-rate data ingestion, messaging, event sourcing, and notifications.
+-Redis Cann't replace DB,it can only (set,get,delete)
+
+
+How To Install Redis
+====================
+1. Download and install Redis Open Source
+   https://redis.io/downloads/ 
+   https://github.com/microsoftarchive/redis/releases (Redis-x64-3.0.504.msi)
+
+2. add redis as path variable (Environment Variable)
+   C:\Program Files\Redis 
+3. check redis version (in command prompt)
+   redis-server -v
+4. open command prompt & run the below command. (redis cli should open at 127.0.0.1:6379 )
+   redis-cli 
+   
+
+
+Commands
+========
+Note : commands are not case sensitive (set/SET), Keys are case sensitive (get name)
+
+-To check the existing keys/data
+ KEYS *
+-Set Data (Syntax: set key value expiryTime_in_seconds)
+ SET name sanjay
+ SET add bangalore ex 2000 
+ SETEX age 3600 45
+-Get Data From Redis
+ GET <keyName>
+ GET name 
+ get add
+ get Add  (nil) (Keys are case sensitive)
+-Check if a key exists (1-Yes,0-No)
+ EXISTS keyName
+-Rename key
+ RENAME name fName
+-Check Data type of the value
+ TYPE keyName
+-Delete Data (del keyName)
+ del name
+-Delete all 
+ FLUSHALL
+-INFO (to check redis server details)
+
+
+Redis Cache Usecases
+====================
+GET: 
+	1. Check if data is there in Redis or not?
+	2. if Data is there in redis, return the data from redis cache
+	3. if Data is not there in redis, fetch data from db , Add the Data in Redis, Return the data
+POST: 
+	1. Insert the data into Database
+	2. add the data in Redis
+PATCH:
+	1. Update the data in Database
+	2. Update the data in Redis
+DELETE:
+	1. Delete the data in Database
+	2. Delete the data in Redis
+
+
 
 TESTING
 =======

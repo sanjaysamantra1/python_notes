@@ -58,19 +58,49 @@ def get_todos():
 
 
 
+Program-4 : Path & Query Param
+==============================
+from fastapi import FastAPI
+app = FastAPI()
+products = [
+    {"id": 1, "name": "Laptop", "category": "Electronics", "price": 75000},
+    {"id": 2, "name": "Mobile", "category": "Electronics", "price": 30000},
+    {"id": 3, "name": "Keyboard", "category": "Accessories", "price": 2000},
+]
+# Path Parameter
+@app.get("/products/{product_id}")
+def get_product(product_id: int):
+    for product in products:
+        if product["id"] == product_id:
+            return product
+    return {"message": "Product not found"}
 
-Program-4 : Employee CRUD
+# Query Parameter
+@app.get("/products")
+def get_products(category: str | None = None):
+    if category:
+        return [
+            product
+            for product in products
+            if product["category"].lower() == category.lower()
+        ]
+    return products
+
+
+
+
+Program-5 : Employee CRUD
 =========================
 employee_data.py:
 -----------------
- employees = [
-        { id: 1, name: 'Amit Sharma', role: 'Manager', salary: 85000, status: 'Active', gender: 'male' },
-        { id: 2, name: 'Priya Verma', role: 'Developer', salary: 65000, status: 'Active', gender: 'female' },
-        { id: 3, name: 'Rahul Mehta', role: 'Tester', salary: 38000, status: 'Inactive', gender: 'male' },
-        { id: 4, name: 'Sneha Iyer', role: 'Developer', salary: 42000, status: 'Inactive', gender: 'female' },
-        { id: 5, name: 'Karan Singh', role: 'Manager', salary: 52000, status: 'Active', gender: 'male' },
-        { id: 6, name: 'Neha Gupta', role: 'Tester', salary: 72000, status: 'Active', gender: 'female' }
-     ];
+employees = [
+    {"id": 1, "name": "Amit Sharma", "role": "Manager", "salary": 85000, "status": "Active", "gender": "male"},
+    {"id": 2, "name": "Priya Verma", "role": "Developer", "salary": 65000, "status": "Active", "gender": "female"},
+    {"id": 3, "name": "Rahul Mehta", "role": "Tester", "salary": 38000, "status": "Inactive", "gender": "male"},
+    {"id": 4, "name": "Sneha Iyer", "role": "Developer", "salary": 42000, "status": "Inactive", "gender": "female"},
+    {"id": 5, "name": "Karan Singh", "role": "Manager", "salary": 52000, "status": "Active", "gender": "male"},
+    {"id": 6, "name": "Neha Gupta", "role": "Tester", "salary": 72000, "status": "Active", "gender": "female"}
+]
 
 
 employee_crud.py:
@@ -124,7 +154,7 @@ def delete_employee(employee_id: int):
 
 
 
-Program-5 : Request & response Model
+Program-6 : Request & response Model
 =====================================
 from fastapi import FastAPI
 from pydantic import BaseModel, EmailStr, Field
@@ -178,6 +208,63 @@ def get_user(user_id: int):
 
 
 
+Program : Exception
+===================
+@app.get("/employees/{employee_id}")
+def get_employee(employee_id: int):
+    for employee in employees:
+        if employee["id"] == employee_id:
+            return employee
+
+    raise HTTPException(
+        status_code=404,
+        detail="Employee not found"
+    )
+	
+
+@app.get("/calculate")
+def calculate(a: int, b: int):
+    try:
+        result = a / b
+        return {"result": result}
+    except ZeroDivisionError:
+        return {
+            "error": "Cannot divide by zero"
+        }
+
+
+
+Program : middleware & dependency Injection
+============================================
+@app.middleware("http")
+async def log_request(request: Request, call_next):
+    print(f"{request.method} {request.url}")
+    response = await call_next(request)
+    print(f"Status: {response.status_code}")
+    return response
+
+
+def get_current_user():
+    token = "valid-token"
+    if token != "valid-token":
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
+
+    return {"id": 1, "name": "Amit"}
+
+
+# Route
+@app.get("/employees")
+def get_employees(
+    user=Depends(get_current_user)
+):
+
+
+
+
+
 
 Program-  : Cookie Example
 ===========================
@@ -221,6 +308,32 @@ async def logout(response: Response):
 
 
 
+
+
+
+File Upload
+===========
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+ALLOWED_TYPES = ["image/jpeg", "image/png", "image/svg"]
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+@app.post("/upload")
+async def upload_file(file: UploadFile):
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(status_code=400,detail="only JPG, PNG, SVG file supported")
+    # create a new file in uploads folder, copy the content from client file to server file
+    server_file = UPLOAD_DIR/file.filename
+    # Copy client file -> server file
+    with open(server_file, "wb") as destination:
+        shutil.copyfileobj(file.file, destination)
+
+    return {
+        "message": "File copied successfully",
+        "original_file": file.filename,
+        "server_file": str(server_file)
+    }
 
 
 
